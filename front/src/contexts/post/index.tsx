@@ -1,21 +1,29 @@
 import { createContext, Dispatch, ReactNode } from "react";
 import { PostReducer } from "@/reducers/post";
 
-const PostContext = createContext<Post[] | null>(null);
+export const initialPostState: PostState = {
+  posts: [{ id: "1", title: "aa", content: "bb" }],
+  selectedPost: { id: "", title: "", content: "" } as Post,
+};
+
+const PostContext = createContext<PostState>(initialPostState);
 const PostDispatchContext = createContext<Dispatch<PostAction> | null>(null);
 
 import { useReducer } from "react";
 
-const PostProvider = (children: ReactNode) => {
-  const [posts, dispatch] = useReducer(PostReducer, []);
+type providerProps = {
+  children: ReactNode; //👈 children prop typr
+};
+
+const PostProvider = (props: providerProps) => {
+  const [state, dispatch] = useReducer(PostReducer, initialPostState);
 
   return (
     <div>
-      <PostContext.Provider value={posts}>
-        <PostDispatchContext.Provider
-          value={dispatch}
-        ></PostDispatchContext.Provider>
-        {children}
+      <PostContext.Provider value={state}>
+        <PostDispatchContext.Provider value={dispatch}>
+          {props.children}
+        </PostDispatchContext.Provider>
       </PostContext.Provider>
     </div>
   );

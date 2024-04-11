@@ -1,38 +1,59 @@
-export const PostReducer = (posts: Post[], action: PostAction) => {
+import { initialPostState } from "@/contexts/post";
+import { PostActionTypes } from "@/helper/Constants";
+
+export const PostReducer = (state: PostState, action: PostAction) => {
   switch (action.type) {
-    case ActionTypes.ADD_POST: {
+    case PostActionTypes.ADD_POST: {
       const { id, title, content } = action.payload as Post;
-      return [
-        ...posts,
-        {
-          id,
-          title,
-          content,
-        },
-      ];
-    }
-    case ActionTypes.EDIT_POST: {
-      const { id, title, content } = action.payload as Post;
-      return posts.map((post) => {
-        if (post.id === id)
-          return {
-            ...post,
+      return {
+        selectedPost: initialPostState.selectedPost,
+        posts: [
+          ...state.posts,
+          {
+            id,
             title,
             content,
-          };
+          },
+        ],
+      };
+    }
+    case PostActionTypes.EDIT_POST: {
+      const { id, title, content } = action.payload as Post;
 
-        return post;
-      });
+      return {
+        selectedPost: initialPostState.selectedPost,
+        posts: state.posts.map((post) => {
+          if (post.id === id)
+            return {
+              id,
+              title,
+              content,
+            };
+
+          return post;
+        }),
+      };
     }
-    case ActionTypes.DELETE_POST: {
+    case PostActionTypes.DELETE_POST: {
       const id = action.payload as string;
-      return posts.filter((post) => post.id !== id);
+
+      return {
+        ...state,
+        selectedPost: initialPostState.selectedPost,
+        posts: [...state.posts.filter((post) => post.id !== id)],
+      };
     }
-    case ActionTypes.GET_POSTS: {
-      return [...posts];
+
+    case PostActionTypes.SET_POST: {
+      return { ...state, selectedPost: action.payload };
     }
+
+    case PostActionTypes.GET_POSTS: {
+      return { ...state };
+    }
+
     default: {
-      const otherAction: never = action.type;
+      const otherAction = action.type;
       return otherAction;
     }
   }

@@ -4,14 +4,12 @@ type Post = {
   content: string;
 };
 
-enum ActionTypes {
-  ADD_POST = "ADD_POST",
-  EDIT_POST = "EDIT_POST",
-  DELETE_POST = "DELETE_POST",
-  GET_POSTS = "GET_POSTS",
-}
-
 type PostAction = {
-  type: ActionTypes;
-  payload: Post | string;
+  type: PostActionTypes;
+  payload?: Post | string;
+};
+
+type PostState = {
+  posts: Post[];
+  selectedPost: Post;
 };

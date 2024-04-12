@@ -1,5 +1,6 @@
-import { PostContext, PostDispatchContext } from "@/contexts/post";
+import { PostContext } from "@/contexts/post";
 import { randomId } from "@/helper";
+import { HttpMethod, PostActionTypes } from "@/helper/Constants";
 import useMutation from "@/hooks/useMutation";
 import { FC, useContext, useEffect, useState } from "react";
 
@@ -9,8 +10,7 @@ const PostInput: FC = () => {
     content: "",
   });
 
-  const postData = useContext(PostContext);
-  const dispatch = useContext(PostDispatchContext);
+  const { postState, dispatch } = useContext(PostContext)!;
   const { data, loading, execute } = useMutation();
 
   const onChangeInput = (
@@ -20,25 +20,36 @@ const PostInput: FC = () => {
     setInput({ ...input, [name]: value });
   };
 
-  const onClickSubmit = () => {
-    const newPost = { id: randomId(), ...input };
-
-    execute({ url: "/post", method: HttpMethod.POST, body: newPost });
+  const onEdit = () => {
+    const post = { id: postState.selectedPost.id, ...input };
+    // execute({ url: "/post", body: post, method: HttpMethod.PUT });
     dispatch!({
-      type: ActionTypes.ADD_POST,
-      payload: newPost,
+      type: PostActionTypes.EDIT_POST,
+      payload: post,
+    });
+  };
+  const onAdd = () => {
+    const post = { id: randomId(), ...input };
+    // execute({ url: "/post", method: HttpMethod.POST, body: newPost });
+    dispatch!({
+      type: PostActionTypes.ADD_POST,
+      payload: post,
     });
   };
 
-  console.log(postData.selectedPost);
+  const onClickSubmit = () => {
+    if (postState.selectedPost.id !== "") return onEdit();
+    onAdd();
+  };
+
+  console.log(postState);
 
   useEffect(() => {
     setInput({
-      title: postData.selectedPost.title,
-      content: postData.selectedPost.content,
+      title: postState.selectedPost.title,
+      content: postState.selectedPost.content,
     });
-    console.log("xxxxxxxx");
-  }, [postData.selectedPost]);
+  }, [postState.selectedPost]);
 
   return (
     <div>
@@ -71,7 +82,7 @@ const PostInput: FC = () => {
         className="btn btn-primary w-full btn-sm mt-4"
         onClick={onClickSubmit}
       >
-        CreatePost
+        {postState.selectedPost.id !== "" ? "Edit Post" : "Create Post"}
       </button>
     </div>
   );

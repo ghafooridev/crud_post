@@ -1,16 +1,18 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useEffect } from "react";
 import PostItem from "./Item";
 import useQuery from "@/hooks/useQuery";
-import { PostContext, PostDispatchContext } from "@/contexts/post";
+import { PostContext } from "@/contexts/post";
+import { PostActionTypes } from "@/helper/Constants";
 
 const PostList: FC = () => {
-  const posts = useContext(PostContext);
-
+  const { postState, dispatch } = useContext(PostContext)!;
   // const { data } = useQuery<Post[]>("/posts");
-  console.log(posts);
+  useEffect(() => {
+    dispatch({ type: PostActionTypes.SET_POST, payload: data });
+  }, []);
   return (
     <div className="flex flex-col gap-3 mt-5">
-      {posts.posts?.map((item: Post) => {
+      {postState.posts?.map((item: Post) => {
         return <PostItem {...item} />;
       })}
     </div>

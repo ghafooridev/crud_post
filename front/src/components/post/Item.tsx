@@ -2,16 +2,17 @@ import { FC, useContext } from "react";
 import { EditIcon } from "@/icons/Edit";
 import { DeleteIcon } from "@/icons/Delete";
 import useMutation from "@/hooks/useMutation";
-import { PostDispatchContext } from "@/contexts/post";
+import { PostContext } from "@/contexts/post";
 import { HttpMethod, PostActionTypes } from "@/helper/Constants";
 
 const PostItem: FC<Post> = (post) => {
   const { id, title, content } = post;
   const { execute } = useMutation();
-  const dispatch = useContext(PostDispatchContext);
+  const { dispatch } = useContext(PostContext)!;
 
   const onClickDelete = (id: string) => {
-    execute({ url: `post/${id}`, method: HttpMethod.DELETE });
+    // execute({ url: `post/${id}`, method: HttpMethod.DELETE });
+    dispatch!({ type: PostActionTypes.DELETE_POST, payload: id });
   };
 
   const onClickEdit = (post: Post) => {

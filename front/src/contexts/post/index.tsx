@@ -1,32 +1,26 @@
-import { createContext, Dispatch, ReactNode } from "react";
+import { createContext, Dispatch, FC, ReactNode, useReducer } from "react";
 import { PostReducer } from "@/reducers/post";
+import { InitialPostState } from "@/helper/Constants";
 
-export const initialPostState: PostState = {
-  posts: [{ id: "1", title: "aa", content: "bb" }],
-  selectedPost: { id: "", title: "", content: "" } as Post,
+type ProviderProps = {
+  children: ReactNode;
 };
 
-const PostContext = createContext<PostState>(initialPostState);
-const PostDispatchContext = createContext<Dispatch<PostAction> | null>(null);
+const PostContext = createContext<{
+  postState: PostState;
+  dispatch: Dispatch<PostAction>;
+} | null>(null);
 
-import { useReducer } from "react";
-
-type providerProps = {
-  children: ReactNode; //👈 children prop typr
-};
-
-const PostProvider = (props: providerProps) => {
-  const [state, dispatch] = useReducer(PostReducer, initialPostState);
+const PostProvider: FC<ProviderProps> = (props) => {
+  const [postState, dispatch] = useReducer(PostReducer, InitialPostState);
 
   return (
     <div>
-      <PostContext.Provider value={state}>
-        <PostDispatchContext.Provider value={dispatch}>
-          {props.children}
-        </PostDispatchContext.Provider>
+      <PostContext.Provider value={{ postState, dispatch }}>
+        {props.children}
       </PostContext.Provider>
     </div>
   );
 };
 
-export { PostContext, PostProvider, PostDispatchContext };
+export { PostContext, PostProvider };

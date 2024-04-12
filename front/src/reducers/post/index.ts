@@ -1,12 +1,11 @@
-import { initialPostState } from "@/contexts/post";
-import { PostActionTypes } from "@/helper/Constants";
+import { PostActionTypes, InitialPostState } from "@/helper/Constants";
 
 export const PostReducer = (state: PostState, action: PostAction) => {
   switch (action.type) {
     case PostActionTypes.ADD_POST: {
       const { id, title, content } = action.payload as Post;
       return {
-        selectedPost: initialPostState.selectedPost,
+        selectedPost: InitialPostState.selectedPost,
         posts: [
           ...state.posts,
           {
@@ -21,15 +20,16 @@ export const PostReducer = (state: PostState, action: PostAction) => {
       const { id, title, content } = action.payload as Post;
 
       return {
-        selectedPost: initialPostState.selectedPost,
+        selectedPost: InitialPostState.selectedPost,
         posts: state.posts.map((post) => {
-          if (post.id === id)
+          if (post.id === id) {
+            console.log("x");
             return {
               id,
               title,
               content,
             };
-
+          }
           return post;
         }),
       };
@@ -39,13 +39,16 @@ export const PostReducer = (state: PostState, action: PostAction) => {
 
       return {
         ...state,
-        selectedPost: initialPostState.selectedPost,
+        selectedPost: InitialPostState.selectedPost,
         posts: [...state.posts.filter((post) => post.id !== id)],
       };
     }
 
     case PostActionTypes.SET_POST: {
       return { ...state, selectedPost: action.payload };
+    }
+    case PostActionTypes.SET_POSTS: {
+      return { ...state, posts: action.payload };
     }
 
     case PostActionTypes.GET_POSTS: {

@@ -11,7 +11,7 @@ const PostItem: FC<Post> = (post) => {
   const { dispatch } = useContext(PostContext)!;
 
   const onClickDelete = (id: string) => {
-    // execute({ url: `post/${id}`, method: HttpMethod.DELETE });
+    execute({ url: `post/${id}`, method: HttpMethod.DELETE });
     dispatch!({ type: PostActionTypes.DELETE_POST, payload: id });
   };
 

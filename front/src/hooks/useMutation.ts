@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { toast } from 'react-toastify';
 
 import { Axios, AxiosResponse } from "@/config/http";
 
@@ -17,7 +18,9 @@ export default function useMutation<T>() {
 
   const handleError = (error: unknown) => {
     if (error instanceof Error) setError(error.message);
+    toast.error("Something Wrong")
     // console.log(error.response?.data.err);
+
   };
 
   const handleSuccess = async (options: MutationOption) => {
@@ -27,6 +30,7 @@ export default function useMutation<T>() {
     );
 
     setData(res.data);
+    toast.success("Successfully Submitted")
   };
 
   // this function is calling useCallback to stop an infinite loop since it is in the dependency array of useEffect

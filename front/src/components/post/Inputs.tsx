@@ -11,7 +11,7 @@ const PostInput: FC = () => {
   });
 
   const { postState, dispatch } = useContext(PostContext)!;
-  const { data, loading, execute } = useMutation();
+  const { execute } = useMutation();
 
   const onChangeInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -22,7 +22,7 @@ const PostInput: FC = () => {
 
   const onEdit = () => {
     const post = { id: postState.selectedPost.id, ...input };
-    // execute({ url: "/post", body: post, method: HttpMethod.PUT });
+    execute({ url: `post/${post.id}`, body: post, method: HttpMethod.PUT });
     dispatch!({
       type: PostActionTypes.EDIT_POST,
       payload: post,
@@ -30,7 +30,7 @@ const PostInput: FC = () => {
   };
   const onAdd = () => {
     const post = { id: randomId(), ...input };
-    // execute({ url: "/post", method: HttpMethod.POST, body: newPost });
+    execute({ url: "post", method: HttpMethod.POST, body: post });
     dispatch!({
       type: PostActionTypes.ADD_POST,
       payload: post,
@@ -41,8 +41,6 @@ const PostInput: FC = () => {
     if (postState.selectedPost.id !== "") return onEdit();
     onAdd();
   };
-
-  console.log(postState);
 
   useEffect(() => {
     setInput({

@@ -16,6 +16,7 @@ export const PostReducer = (state: PostState, action: PostAction) => {
         ],
       };
     }
+
     case PostActionTypes.EDIT_POST: {
       const { id, title, content } = action.payload as Post;
 
@@ -23,7 +24,7 @@ export const PostReducer = (state: PostState, action: PostAction) => {
         selectedPost: InitialPostState.selectedPost,
         posts: state.posts.map((post) => {
           if (post.id === id) {
-            console.log("x");
+
             return {
               id,
               title,
@@ -34,6 +35,7 @@ export const PostReducer = (state: PostState, action: PostAction) => {
         }),
       };
     }
+
     case PostActionTypes.DELETE_POST: {
       const id = action.payload as string;
 
@@ -47,13 +49,15 @@ export const PostReducer = (state: PostState, action: PostAction) => {
     case PostActionTypes.SET_POST: {
       return { ...state, selectedPost: action.payload };
     }
+
     case PostActionTypes.SET_POSTS: {
-      return { ...state, posts: action.payload };
+      return { selectedPost: InitialPostState.selectedPost, posts: action.payload };
     }
 
     case PostActionTypes.GET_POSTS: {
       return { ...state };
     }
+
 
     default: {
       const otherAction = action.type;

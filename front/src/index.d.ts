@@ -6,7 +6,7 @@ type Post = {
 
 type PostAction = {
   type: PostActionTypes;
-  payload?: Post | string;
+  payload?: Post | Post[] | string;
 };
 
 type PostState = {

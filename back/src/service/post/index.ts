@@ -1,12 +1,13 @@
-import { NewPost, Post } from './../../db/schema/index';
+import { NewPost, Post, insertPostSchema } from './../../db/schema/index';
 import { db } from "../../db"
 import { posts } from "../../db/schema"
-import { eq } from "drizzle-orm"
+import { eq, like } from "drizzle-orm"
+import { postValidators } from '../../validator/post';
 
-export const getPostsService = async (): Promise<Post[]> => {
-    const posts = await db.query.posts.findMany();
-
-    return posts;
+export const getPostsService = async (search: string): Promise<Post[]> => {
+    // const allPosts = await db.query.posts.findMany({ where: like(posts.title, search) });
+    const allPosts = await db.select().from(posts).where(search ? like(posts.title, `%${search}%`) : undefined)
+    return allPosts;
 }
 
 
@@ -19,20 +20,21 @@ export const getPostService = async (id: string): Promise<Post | undefined> => {
 }
 
 export const addPostService = async (body: NewPost): Promise<NewPost | undefined> => {
-    const post: NewPost[] = await db.insert(posts).values({
-        title: body.title,
-        content: body.content
-    }).returning();
+    // add zod validator from drizzle-zod
+    const newPost = postValidators.upsert<Pick<Post, ("title" | "content")>>(body)
+
+    const post: NewPost[] = await db.insert(posts).values(newPost).returning();
 
     if (post) return post[0]
 }
 
 
 export const editPostService = async (id: string, body: NewPost): Promise<Post | undefined> => {
-    const post: Post[] = await db.update(posts).set({
-        title: body.title,
-        content: body.content
-    }).where(eq(posts.id, id)).returning()
+
+    // add zod validator from drizzle-zod
+    const editedPost = postValidators.upsert<Pick<Post, ("title" | "content")>>(body)
+
+    const post: Post[] = await db.update(posts).set(editedPost).where(eq(posts.id, id)).returning()
 
     if (post) return post[0]
 }

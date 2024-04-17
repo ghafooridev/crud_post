@@ -9,7 +9,7 @@ const Post: FC = () => {
     <PostProvider>
       <div>
         <div className="grid grid-cols-12 ">
-          <div className="col-start-5 col-span-4">
+          <div className="lg:col-start-4 lg:col-span-6 col-start-2 col-span-10">
             <PostHeader />
             <div className="divider"></div>
             <PostInput />

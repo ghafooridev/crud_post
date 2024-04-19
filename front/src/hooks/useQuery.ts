@@ -2,8 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 
 import { Axios, AxiosResponse } from "@/config/http";
 
-
-
 export default function useQuery<T>(url: string, lazy = false) {
   const [data, setData] = useState<T>();
   const [error, setError] = useState<string>();

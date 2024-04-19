@@ -3,12 +3,27 @@ import { randomId } from "@/helper";
 import { HttpMethod, PostActionTypes } from "@/helper/Constants";
 import useMutation from "@/hooks/useMutation";
 import { FC, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { z } from "zod";
+
+const DEFAULT_INPUT_VALUE = {
+  title: "",
+  content: "",
+};
+
+const inputSchema = z.object({
+  title: z.string().refine((value) => value.length >= 4, {
+    message: "Title must be at least 8 characters long",
+  }),
+  content: z.string(),
+});
+
+//bonus
+// type inputType = z.infer<typeof inputSchema>;
 
 const PostInput: FC = () => {
-  const [input, setInput] = useState<Record<"title" | "content", string>>({
-    title: "",
-    content: "",
-  });
+  const [input, setInput] =
+    useState<Record<"title" | "content", string>>(DEFAULT_INPUT_VALUE);
 
   const { postState, dispatch } = useContext(PostContext)!;
   const { execute } = useMutation();
@@ -38,8 +53,21 @@ const PostInput: FC = () => {
   };
 
   const onClickSubmit = () => {
-    if (postState.selectedPost.id !== "") return onEdit();
-    onAdd();
+    try {
+      inputSchema.parse(input);
+
+      if (postState.selectedPost.id !== "") {
+        onEdit();
+      } else {
+        onAdd();
+      }
+      setInput(DEFAULT_INPUT_VALUE);
+    } catch (error) {
+      // type narrowing
+      if (error instanceof z.ZodError) {
+        toast.error(JSON.parse(error.toString())[0].message);
+      }
+    }
   };
 
   useEffect(() => {

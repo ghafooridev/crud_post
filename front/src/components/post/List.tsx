@@ -15,9 +15,15 @@ const PostList: FC = () => {
 
   return (
     <div className="flex flex-col gap-3 mt-5">
-      {postState.posts?.map((item: Post) => {
-        return <PostItem key={item.id} {...item} />;
-      })}
+      {postState.posts?.length > 0 ? (
+        postState.posts?.map((item: Post) => {
+          return <PostItem key={item.id} {...item} />;
+        })
+      ) : (
+        <span className="text-center text-lg font-bold">
+          No Data To Display
+        </span>
+      )}
     </div>
   );
 };

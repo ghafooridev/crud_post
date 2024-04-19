@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "./schema"
+import * as schema from "./schema/post"
 
 if (!process.env.DB_HOST ||
     !process.env.DB_NAME ||
@@ -11,7 +11,7 @@ if (!process.env.DB_HOST ||
 }
 
 const pool = new Pool({
-    port: 5432,
+    port: Number(process.env.DB_PORT),
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     user: process.env.DB_USER,

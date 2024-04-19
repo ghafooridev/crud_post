@@ -1,6 +1,6 @@
-import { NewPost, Post, insertPostSchema } from './../../db/schema/index';
+import { NewPost, Post, insertPostSchema } from '../../db/schema/post/index';
 import { db } from "../../db"
-import { posts } from "../../db/schema"
+import { posts } from "../../db/schema/post"
 import { eq, like } from "drizzle-orm"
 import { postValidators } from '../../validator/post';
 

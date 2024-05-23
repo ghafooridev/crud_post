@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "./schema/post"
+import * as schema from "./schema"
 
 if (!process.env.DB_HOST ||
     !process.env.DB_NAME ||
